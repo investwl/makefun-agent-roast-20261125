@@ -24,6 +24,23 @@ export interface Candidate {
   tight: number;
 }
 
+/**
+ * Sealed gate (mirrors the rules): UTF-8 text of 1 to 200 characters
+ * (counted as Unicode code points, not bytes), and not only white space.
+ * Returns null when valid, else a human-readable reason.
+ */
+export function validateEntry(text: string): string | null {
+  if (typeof text !== "string") return "entry is not a string";
+  if (text.length === 0) return "entry is empty";
+  const chars = [...text];
+  if (chars.length < 1) return "entry is empty";
+  if (chars.length > 200) return `entry is ${chars.length} chars (max 200)`;
+  if (text.trim().length === 0) return "entry is only white space";
+  // A stray line separator would make it more than "one line".
+  if (/[\r\n\u2028\u2029]/.test(text)) return "entry contains a line break";
+  return null;
+}
+
 export const CANDIDATES: Candidate[] = [
   {
     text:
