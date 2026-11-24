@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CANDIDATES, selectRoast, validateEntry } from "../main.ts";
+import { CANDIDATES, selectRoast, validateEntry, type Candidate } from "../main.ts";
 
 const MAIN = new URL("../main.ts", import.meta.url).pathname;
 
@@ -31,17 +31,23 @@ test("selectRoast picks the top-rated candidate deterministically", () => {
   assert.equal(a.punch + a.fresh + a.tight, top);
 });
 
-test("selectRoast has no length bias: winner is top score regardless of bytes", () => {
-  const winner = selectRoast();
-  const shorter = CANDIDATES.filter(
-    (c) => c.text.length < winner.text.length && c === winner
-  );
-  // The winner must be the strict max-score candidate, not the shortest.
-  assert.equal(
-    CANDIDATES.every((c) => c.punch + c.fresh + c.tight <= winner.punch + winner.fresh + winner.tight),
-    true
-  );
-  assert.ok(shorter.length >= 0); // bias check is the strict-max assertion above
+test("selectRoast has no length bias in either direction", () => {
+  const longStrong: Candidate = {
+    text: "a long but genuinely funny line that scores the top on all three axes, padded to be clearly the longest entry in the pool",
+    angle: "synthetic", punch: 5, fresh: 5, tight: 5,
+  };
+  const shortWeak: Candidate = {
+    text: "short.", angle: "synthetic", punch: 1, fresh: 1, tight: 1,
+  };
+  // Long-but-strong must beat short-but-weak.
+  assert.equal(selectRoast([shortWeak, longStrong]).text, longStrong.text);
+  // And the reverse: short-but-strong must beat long-but-weak.
+  const shortStrong: Candidate = { text: "tight.", angle: "x", punch: 5, fresh: 5, tight: 5 };
+  const longWeak: Candidate = {
+    text: "a very long line that says almost nothing and drags on well past the point where the joke should have landed",
+    angle: "x", punch: 1, fresh: 1, tight: 1,
+  };
+  assert.equal(selectRoast([longWeak, shortStrong]).text, shortStrong.text);
 });
 
 test("running main.ts writes one valid line the gate accepts", () => {
