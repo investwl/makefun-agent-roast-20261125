@@ -178,6 +178,20 @@ export const CANDIDATES: Candidate[] = [
     fresh: 3,
     tight: 4,
   },
+  {
+    text: "I asked my agent to roast itself. It scheduled a retrospective about the roast.",
+    angle: "agent turns a joke into process",
+    punch: 5,
+    fresh: 4,
+    tight: 4,
+  },
+  {
+    text: "My agent's love language is a diff I didn't ask for.",
+    angle: "unrequested changes as affection (tighter variant)",
+    punch: 4,
+    fresh: 4,
+    tight: 5,
+  },
 ];
 
 /**
