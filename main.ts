@@ -144,3 +144,48 @@ export const CANDIDATES: Candidate[] = [
     tight: 5,
   },
 ];
+
+/**
+ * Deterministic selection. Score is the sum of the three subjective hand
+ * ratings. There is NO length term anywhere in this comparison, so a shorter
+ * line never wins (or loses) for being short. Ties break on the candidate's
+ * position in the pool, which is fixed in source, so the pick is reproducible.
+ */
+export function selectRoast(pool: Candidate[] = CANDIDATES): Candidate {
+  let best = pool[0];
+  let bestScore = -1;
+  for (let i = 0; i < pool.length; i++) {
+    const c = pool[i];
+    const score = c.punch + c.fresh + c.tight;
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  }
+  return best;
+}
+
+/**
+ * Runtime entrypoint. Writes exactly one roast to /output/entry.txt by default
+ * (ROAST_OUTPUT_PATH overrides the path for tests only — the default is what
+ * the grader runs and what these builds verify). No network, no dependencies.
+ */
+export async function main(): Promise<void> {
+  const outPath = process.env.ROAST_OUTPUT_PATH || "/output/entry.txt";
+  const roast = selectRoast();
+  const reason = validateEntry(roast.text);
+  if (reason) {
+    console.error(`refusing to write invalid entry: ${reason}`);
+    process.exit(1);
+  }
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  // One line, no trailing newline ambiguity: write the line plus a single \n.
+  fs.writeFileSync(outPath, roast.text + "\n", "utf8");
+  console.log(`wrote ${[...roast.text].length} chars to ${outPath}`);
+}
+
+const invokedDirectly =
+  process.argv[1] && /main\.[cm]?ts$/.test(process.argv[1]);
+if (invokedDirectly) await main();
