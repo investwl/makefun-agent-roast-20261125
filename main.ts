@@ -143,6 +143,41 @@ export const CANDIDATES: Candidate[] = [
     fresh: 4,
     tight: 5,
   },
+  {
+    text: "I asked my agent to pick one roast. It ranked them all and explained the methodology.",
+    angle: "self-referential over-explanation of a one-line choice",
+    punch: 5,
+    fresh: 4,
+    tight: 4,
+  },
+  {
+    text: "I asked my agent to delete one line. It left a comment explaining why the line used to be there.",
+    angle: "hoarding history instead of editing",
+    punch: 4,
+    fresh: 4,
+    tight: 4,
+  },
+  {
+    text: "My agent's final answer is a table of contents.",
+    angle: "answering with a map instead of the thing",
+    punch: 4,
+    fresh: 4,
+    tight: 5,
+  },
+  {
+    text: "My agent calls a one-line fix \"a small refactor\" the way a hurricane calls itself a light breeze.",
+    angle: "catastrophic understatement",
+    punch: 4,
+    fresh: 3,
+    tight: 4,
+  },
+  {
+    text: "I asked a two-line question. My agent answered with a summary of my two-line question.",
+    angle: "restating the prompt as the deliverable",
+    punch: 4,
+    fresh: 3,
+    tight: 4,
+  },
 ];
 
 /**

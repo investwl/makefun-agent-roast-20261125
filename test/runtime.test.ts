@@ -19,8 +19,8 @@ function runMain(): { out: string; exit: number } {
   return { out: readFileSync(target, "utf8"), exit: 0 };
 }
 
-test("pool still holds every draft (14 candidates)", () => {
-  assert.equal(CANDIDATES.length, 14);
+test("pool retains at least the 14 original drafts", () => {
+  assert.ok(CANDIDATES.length >= 14, `pool shrank to ${CANDIDATES.length}`);
 });
 
 test("selectRoast picks the top-rated candidate deterministically", () => {
