@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFileSync, mkdtempSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CANDIDATES, selectRoast, validateEntry, type Candidate } from "../main.ts";
@@ -69,4 +70,13 @@ test("output is valid UTF-8 and ends with a single newline", () => {
   assert.ok(bytes.length > 0);
   assert.equal(out.endsWith("\n"), true);
   assert.equal(out.slice(0, -1).endsWith("\n"), false);
+});
+
+test("two independent process runs produce byte-identical output", () => {
+  const sha = (s: string) => createHash("sha256").update(s).digest("hex");
+  const a = sha(runMain().out);
+  const b = sha(runMain().out);
+  assert.equal(a, b);
+  // And it matches the in-process selection, so no hidden nondeterminism.
+  assert.equal(sha(selectRoast().text + "\n"), a);
 });
