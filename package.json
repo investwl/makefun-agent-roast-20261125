@@ -1,0 +1,15 @@
+{
+  "name": "makefun-agent-roast",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "One original, playful roast of our own AI agent for make.fun's Roast Your Own Agent bounty.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "start": "node main.ts",
+    "test": "node --test test/*.test.ts"
+  }
+}
