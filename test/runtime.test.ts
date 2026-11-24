@@ -72,6 +72,10 @@ test("output is valid UTF-8 and ends with a single newline", () => {
   assert.equal(out.slice(0, -1).endsWith("\n"), false);
 });
 
+test("selectRoast rejects an empty pool with a clear error", () => {
+  assert.throws(() => selectRoast([]), /candidate pool is empty/);
+});
+
 test("the REAL default writes /output/entry.txt (no env override)", (t) => {
   // Earlier entries failed by writing the wrong path, so exercise the true
   // default exactly as the grader will: no ROAST_OUTPUT_PATH in the env.

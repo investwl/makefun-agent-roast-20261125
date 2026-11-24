@@ -187,6 +187,9 @@ export const CANDIDATES: Candidate[] = [
  * position in the pool, which is fixed in source, so the pick is reproducible.
  */
 export function selectRoast(pool: Candidate[] = CANDIDATES): Candidate {
+  if (!pool || pool.length === 0) {
+    throw new Error("selectRoast: candidate pool is empty");
+  }
   let best = pool[0];
   let bestScore = -1;
   for (let i = 0; i < pool.length; i++) {
