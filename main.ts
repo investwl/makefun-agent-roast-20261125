@@ -52,7 +52,7 @@ export const CANDIDATES: Candidate[] = [
   },
   {
     text:
-      "I asked my agent to be brief. It wrote a function called makeBrief() and never called it.",
+      "I asked my agent to be brief. It shipped a makeBrief() function and never called it.",
     angle: "meta: over-engineering the very instruction to be brief",
     punch: 5,
     fresh: 4,
