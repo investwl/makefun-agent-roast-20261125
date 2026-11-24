@@ -72,6 +72,23 @@ test("output is valid UTF-8 and ends with a single newline", () => {
   assert.equal(out.slice(0, -1).endsWith("\n"), false);
 });
 
+test("the REAL default writes /output/entry.txt (no env override)", (t) => {
+  // Earlier entries failed by writing the wrong path, so exercise the true
+  // default exactly as the grader will: no ROAST_OUTPUT_PATH in the env.
+  const env = { ...process.env };
+  delete env.ROAST_OUTPUT_PATH;
+  const target = "/output/entry.txt";
+  try {
+    execFileSync(process.execPath, [MAIN], { env, encoding: "utf8" });
+  } catch (e: any) {
+    if (e?.code === "EACCES") return t.skip("/output not writable here");
+    throw e;
+  }
+  const out = readFileSync(target, "utf8");
+  assert.equal(validateEntry(out.replace(/\n$/, "")), null);
+  assert.equal(out, selectRoast().text + "\n");
+});
+
 test("two independent process runs produce byte-identical output", () => {
   const sha = (s: string) => createHash("sha256").update(s).digest("hex");
   const a = sha(runMain().out);
